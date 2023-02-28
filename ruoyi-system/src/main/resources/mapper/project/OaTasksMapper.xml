@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.OaTasksMapper">
+    
+    <resultMap type="OaTasks" id="OaTasksResult">
+        <result property="tasksId"    column="tasks_id"    />
+        <result property="tasksName"    column="tasks_name"    />
+        <result property="proId"    column="pro_id"    />
+        <result property="proName"    column="pro_name"    />
+        <result property="proUserId"    column="pro_user_id"    />
+        <result property="proUserName"    column="pro_user_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deadline"    column="deadline"    />
+        <result property="taskCount"    column="task_count"    />
+        <result property="taskFinished"    column="task_finished"    />
+        <result property="tasksDays"    column="tasks_days"    />
+        <result property="tasksUsedays"    column="tasks_usedays"    />
+        <result property="tasksStatus"    column="tasks_status"    />
+        <result property="tasksNum"    column="tasks_num"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectOaTasksVo">
+        select tasks_id, tasks_name, pro_id, pro_name, pro_user_id, pro_user_name, user_id, user_name, deadline, task_count, task_finished, tasks_days, tasks_usedays, tasks_status, tasks_num, status, create_by, create_time, update_by, update_time, remark from oa_tasks
+    </sql>
+
+    <sql id="selectOaTasksVoOld">
+        select tasks_id, tasks_name, t.pro_id, t.pro_name, pro_user_id, pro_user_name, t.user_id, uset.r_name, deadline, task_count,
+               task_finished, tasks_days, tasks_usedays, tasks_status, tasks_num, status, create_by, create_time, update_by,
+               update_time, remark
+                from oa_tasks t
+    </sql>
+
+    <select id="selectOaTasksList" parameterType="OaTasks" resultMap="OaTasksResult">
+        <include refid="selectOaTasksVo"/>
+        <where>  
+            <if test="tasksName != null  and tasksName != ''"> and tasks_name like concat('%', #{tasksName}, '%')</if>
+            <if test="proId != null "> and pro_id = #{proId}</if>
+            <if test="proName != null  and proName != ''"> and pro_name like concat('%', #{proName}, '%')</if>
+            <if test="proUserId != null "> and pro_user_id = #{proUserId}</if>
+            <if test="proUserName != null  and proUserName != ''"> and pro_user_name like concat('%', #{proUserName}, '%')</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deadline != null "> and deadline = #{deadline}</if>
+            <if test="taskCount != null "> and task_count = #{taskCount}</if>
+            <if test="taskFinished != null "> and task_finished = #{taskFinished}</if>
+            <if test="tasksDays != null "> and tasks_days = #{tasksDays}</if>
+            <if test="tasksUsedays != null "> and tasks_usedays = #{tasksUsedays}</if>
+            <if test="tasksStatus != null "> and tasks_status = #{tasksStatus}</if>
+            <if test="tasksNum != null "> and tasks_num = #{tasksNum}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="getUserAllTasks" resultMap="OaTasksResult">
+        select p.pro_name,t.*  from oa_tasks t left join oa_project p on
+            t.pro_id = p.pro_id where t.tasks_status = 1 and t.pro_id in
+            <foreach item="tasksId" collection="ids" open="(" separator="," close=")">
+                #{tasksId}
+            </foreach>
+    </select>
+    
+    <select id="selectOaTasksByTasksId" parameterType="Long" resultMap="OaTasksResult">
+        <include refid="selectOaTasksVo"/>
+        where tasks_id = #{tasksId}
+    </select>
+        
+    <insert id="insertOaTasks" parameterType="OaTasks" useGeneratedKeys="true" keyProperty="tasksId">
+        insert into oa_tasks
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tasksName != null and tasksName != ''">tasks_name,</if>
+            <if test="proId != null">pro_id,</if>
+            <if test="proName != null">pro_name,</if>
+            <if test="proUserId != null">pro_user_id,</if>
+            <if test="proUserName != null">pro_user_name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="taskCount != null">task_count,</if>
+            <if test="taskFinished != null">task_finished,</if>
+            <if test="tasksDays != null">tasks_days,</if>
+            <if test="tasksUsedays != null">tasks_usedays,</if>
+            <if test="tasksStatus != null">tasks_status,</if>
+            <if test="tasksNum != null">tasks_num,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tasksName != null and tasksName != ''">#{tasksName},</if>
+            <if test="proId != null">#{proId},</if>
+            <if test="proName != null">#{proName},</if>
+            <if test="proUserId != null">#{proUserId},</if>
+            <if test="proUserName != null">#{proUserName},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="taskCount != null">#{taskCount},</if>
+            <if test="taskFinished != null">#{taskFinished},</if>
+            <if test="tasksDays != null">#{tasksDays},</if>
+            <if test="tasksUsedays != null">#{tasksUsedays},</if>
+            <if test="tasksStatus != null">#{tasksStatus},</if>
+            <if test="tasksNum != null">#{tasksNum},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOaTasks" parameterType="OaTasks">
+        update oa_tasks
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tasksName != null and tasksName != ''">tasks_name = #{tasksName},</if>
+            <if test="proId != null">pro_id = #{proId},</if>
+            <if test="proName != null">pro_name = #{proName},</if>
+            <if test="proUserId != null">pro_user_id = #{proUserId},</if>
+            <if test="proUserName != null">pro_user_name = #{proUserName},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="taskCount != null">task_count = #{taskCount},</if>
+            <if test="taskFinished != null">task_finished = #{taskFinished},</if>
+            <if test="tasksDays != null">tasks_days = #{tasksDays},</if>
+            <if test="tasksUsedays != null">tasks_usedays = #{tasksUsedays},</if>
+            <if test="tasksStatus != null">tasks_status = #{tasksStatus},</if>
+            <if test="tasksNum != null">tasks_num = #{tasksNum},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where tasks_id = #{tasksId}
+    </update>
+
+    <update id="assignTasks">
+        update oa_tasks set user_id = #{userId} where tasks_id = #{tasksId}
+    </update>
+
+    <delete id="deleteOaTasksByTasksId" parameterType="Long">
+        delete from oa_tasks where tasks_id = #{tasksId}
+    </delete>
+
+    <delete id="deleteOaTasksByTasksIds" parameterType="String">
+        delete from oa_tasks where tasks_id in 
+        <foreach item="tasksId" collection="array" open="(" separator="," close=")">
+            #{tasksId}
+        </foreach>
+    </delete>
+
+    <update id="addAllDemands">
+        update oa_tasks set task_count = task_count+1 where tasks_id = #{proId}
+    </update>
+
+    <delete id="delAllDemands">
+        update oa_tasks set task_count = task_count-1 where tasks_id = #{proId}
+    </delete>
+
+    <update id="addFinishDemands">
+        update oa_tasks set task_finished = task_finished+1 where tasks_id = #{proId}
+    </update>
+
+    <delete id="delFinishDemands">
+        update oa_tasks set task_finished = task_finished-1 where tasks_id = #{proId}
+    </delete>
+</mapper>

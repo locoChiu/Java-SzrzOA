@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.OaDayReportMapper">
+    
+    <resultMap type="OaDayReport" id="OaDayReportResult">
+        <result property="dayrId"    column="dayr_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="workType"    column="work_type"    />
+        <result property="workHours"    column="work_hours"    />
+        <result property="workDate"    column="work_date"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOaDayReportVo">
+        select dayr_id, content,user_id, work_type, work_hours, work_date, status, del_flag, create_by, create_time, update_by, update_time from oa_day_report
+    </sql>
+
+    <select id="selectOaDayReportList" parameterType="OaDayReport" resultMap="OaDayReportResult">
+        <include refid="selectOaDayReportVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="workType != null  and workType != ''"> and work_type = #{workType}</if>
+            <if test="workHours != null "> and work_hours = #{workHours}</if>
+            <if test="workDate != null "> and work_date = #{workDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectOaDayReportByDayrId" parameterType="Long" resultMap="OaDayReportResult">
+        <include refid="selectOaDayReportVo"/>
+        where dayr_id = #{dayrId}
+    </select>
+        
+    <insert id="insertOaDayReport" parameterType="OaDayReport" useGeneratedKeys="true" keyProperty="dayrId">
+        insert into oa_day_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="workType != null">work_type,</if>
+            <if test="workHours != null">work_hours,</if>
+            <if test="workDate != null">work_date,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="workType != null">#{workType},</if>
+            <if test="workHours != null">#{workHours},</if>
+            <if test="workDate != null">#{workDate},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOaDayReport" parameterType="OaDayReport">
+        update oa_day_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="workType != null">work_type = #{workType},</if>
+            <if test="workHours != null">work_hours = #{workHours},</if>
+            <if test="workDate != null">work_date = #{workDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where dayr_id = #{dayrId}
+    </update>
+
+    <delete id="deleteOaDayReportByDayrId" parameterType="Long">
+        delete from oa_day_report where dayr_id = #{dayrId}
+    </delete>
+
+    <delete id="deleteOaDayReportByDayrIds" parameterType="String">
+        delete from oa_day_report where dayr_id in 
+        <foreach item="dayrId" collection="array" open="(" separator="," close=")">
+            #{dayrId}
+        </foreach>
+    </delete>
+
+    <insert id="insertDayHours" parameterType="OaDayHours" useGeneratedKeys="true" keyProperty="id">
+        insert into oa_dayhours
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="proId != null">pro_id,</if>
+            <if test="tasksId != null">tasks_id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="workHours != null">work_hours,</if>
+            <if test="workDate != null">work_date,</if>
+            <if test="content != null">content,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="proId != null">#{proId},</if>
+            <if test="tasksId != null">#{tasksId},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="workHours != null">#{workHours},</if>
+            <if test="workDate != null">#{workDate},</if>
+            <if test="content != null">#{content},</if>
+        </trim>
+    </insert>
+</mapper>

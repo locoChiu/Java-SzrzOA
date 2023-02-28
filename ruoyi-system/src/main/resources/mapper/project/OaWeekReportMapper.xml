@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.OaWeekReportMapper">
+    
+    <resultMap type="OaWeekReport" id="OaWeekReportResult">
+        <result property="weekrId"    column="weekr_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="writeDate"    column="write_date"    />
+        <result property="weekContent"    column="week_content"    />
+        <result property="nextweekPlan"    column="nextweek_plan"    />
+        <result property="problems"    column="problems"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="weekPercent" column="week_percent"/>
+        <result property="weekProname" column="week_proname"/>
+    </resultMap>
+
+    <sql id="selectOaWeekReportVo">
+        select weekr_id, r.user_id, u.nick_name as userName,write_date, week_proname,week_percent,
+               week_content, nextweek_plan, problems, r.del_flag, r.create_by, r.create_time,
+               r.update_by, r.update_time from oa_week_report as r left join sys_user as u on r.user_id = u.user_id
+    </sql>
+
+    <select id="selectOaWeekReportList" parameterType="OaWeekReport" resultMap="OaWeekReportResult">
+        <include refid="selectOaWeekReportVo"/>
+        <where>  
+            <if test="userId != null "> and r.user_id = #{userId}</if>
+            <if test="writeDate != null "> and write_date = #{writeDate}</if>
+            <if test="weekContent != null  and weekContent != ''"> and week_content = #{weekContent}</if>
+            <if test="nextweekPlan != null  and nextweekPlan != ''"> and nextweek_plan = #{nextweekPlan}</if>
+            <if test="problems != null  and problems != ''"> and problems = #{problems}</if>
+        </where>
+    </select>
+    
+    <select id="selectOaWeekReportByWeekrId" parameterType="Long" resultMap="OaWeekReportResult">
+        <include refid="selectOaWeekReportVo"/>
+        where weekr_id = #{weekrId}
+    </select>
+        
+    <insert id="insertOaWeekReport" parameterType="OaWeekReport" useGeneratedKeys="true" keyProperty="weekrId">
+        insert into oa_week_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="writeDate != null">write_date,</if>
+            <if test="weekContent != null">week_content,</if>
+            <if test="nextweekPlan != null">nextweek_plan,</if>
+            <if test="problems != null">problems,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="weekProname != null">week_proname,</if>
+            <if test="weekPercent != null">week_percent,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="writeDate != null">#{writeDate},</if>
+            <if test="weekContent != null">#{weekContent},</if>
+            <if test="nextweekPlan != null">#{nextweekPlan},</if>
+            <if test="problems != null">#{problems},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="weekProname != null">#{weekProname},</if>
+            <if test="weekPercent != null">#{weekPercent},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOaWeekReport" parameterType="OaWeekReport">
+        update oa_week_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="writeDate != null">write_date = #{writeDate},</if>
+            <if test="weekContent != null">week_content = #{weekContent},</if>
+            <if test="nextweekPlan != null">nextweek_plan = #{nextweekPlan},</if>
+            <if test="problems != null">problems = #{problems},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where weekr_id = #{weekrId}
+    </update>
+
+    <delete id="deleteOaWeekReportByWeekrId" parameterType="Long">
+        delete from oa_week_report where weekr_id = #{weekrId}
+    </delete>
+
+    <delete id="deleteOaWeekReportByWeekrIds" parameterType="String">
+        delete from oa_week_report where weekr_id in 
+        <foreach item="weekrId" collection="array" open="(" separator="," close=")">
+            #{weekrId}
+        </foreach>
+    </delete>
+</mapper>

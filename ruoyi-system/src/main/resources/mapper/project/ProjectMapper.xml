@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.ProjectMapper">
+
+    <resultMap id="SysUsr" type="com.ruoyi.common.core.domain.entity.SysUser">
+            <result property="userId"       column="user_id"      />
+            <result property="deptId"       column="dept_id"      />
+            <result property="userName"     column="user_name"    />
+            <result property="nickName"     column="nick_name"    />
+            <result property="email"        column="email"        />
+            <result property="phonenumber"  column="phonenumber"  />
+    </resultMap>
+
+    <resultMap id="ProjectFile" type="com.ruoyi.project.domain.ProjectFile">
+        <id property="fileId" column="file_id"></id>
+        <result property="pathName" column="file_path"></result>
+        <result property="proId" column="pro_id"></result>
+    </resultMap>
+
+    <resultMap type="Project" id="ProjectResultAndPropersons">
+        <id  property="proId"    column="pro_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="proName"    column="pro_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="userId"    column="user_id"    />
+        <result property="proIntro"    column="pro_intro"    />
+        <result property="description"    column="description"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="proSpeed"    column="pro_speed"    />
+        <result property="allDemand"    column="all_demand"    />
+        <result property="finishDemand"    column="finish_demand"    />
+        <result property="allTasks"    column="all_tasks"    />
+        <result property="finishTasks"    column="finish_tasks"    />
+        <result property="contractNo"    column="contract_no"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <collection property="proPersons" ofType="com.ruoyi.common.core.domain.entity.SysUser">
+            <result property="userId"       column="user_id"      />
+            <result property="deptId"       column="dept_id"      />
+            <result property="userName"     column="user_name"    />
+            <result property="nickName"     column="nick_name"    />
+            <result property="email"        column="email"        />
+            <result property="phonenumber"  column="phonenumber"  />
+        </collection>
+    </resultMap>
+
+    <resultMap type="Project" id="ProjectResult">
+        <id  property="proId"    column="pro_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="proName"    column="pro_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="userId"    column="user_id"    />
+        <result property="proIntro"    column="pro_intro"    />
+        <result property="description"    column="description"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="proSpeed"    column="pro_speed"    />
+        <result property="allDemand"    column="all_demand"    />
+        <result property="finishDemand"    column="finish_demand"    />
+        <result property="allTasks"    column="all_tasks"    />
+        <result property="finishTasks"    column="finish_tasks"    />
+        <result property="contractNo"    column="contract_no"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <!--<sql id="selectProjectVo">-->
+    <!--    select pro_id, dept_id, pro_name, order_num, user_id, pro_intro, description, start_time, end_time, pro_speed, all_demand, finish_demand, all_tasks, finish_tasks, contract_no, status, del_flag, create_by, create_time, update_by, update_time from oa_project-->
+    <!--</sql>-->
+
+    <sql id="selectProjectVoAndProperson">
+        SELECT
+            user.nick_name,user.user_id,user.user_name,pro.pro_id,pro.dept_id,pro_name,pro.order_num,pro.user_id,
+            pro_intro,pro.description,pro.start_time,pro.end_time,pro.pro_speed,pro.all_demand,pro.finish_demand,pro.all_tasks,pro.finish_tasks,
+            pro.contract_no,pro.STATUS,pro.del_flag,pro.create_by,pro.create_time,pro.update_by,pro.update_time
+        FROM
+            oa_project as pro
+                left join oa_pro_user as pu on pro.pro_id = pu.pro_id
+                inner join sys_user as user on pu.user_id = user.user_id
+    </sql>
+
+    <sql id="selectProjectVo">
+        SELECT
+            pro.pro_id,pro.dept_id,pro_name,pro.order_num,pro.user_id,
+            pro_intro,pro.description,pro.start_time,pro.end_time,pro.pro_speed,pro.all_demand,pro.finish_demand,pro.all_tasks,pro.finish_tasks,
+            pro.contract_no,pro.STATUS,pro.del_flag,pro.create_by,pro.create_time,pro.update_by,pro.update_time,
+            u.nick_name as userName
+        FROM oa_project as pro left join sys_user as u on pro.user_id = u.user_id
+    </sql>
+
+    <select id="selectProjectList" parameterType="Project" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        <where>  
+            <if test="deptId != null "> and pro.dept_id = #{deptId}</if>
+            <if test="proName != null  and proName != ''"> and pro_name like concat('%', #{proName}, '%')</if>
+            <if test="orderNum != null "> and pro.order_num = #{orderNum}</if>
+            <if test="userId != null  and userId != ''"> and pro.user_id = #{userId}</if>
+            <if test="startTime != null "> and pro.start_time = #{startTime}</if>
+            <if test="endTime != null "> and pro.end_time = #{endTime}</if>
+            <if test="contractNo != null  and contractNo != ''"> and contract_no = #{contractNo}</if>
+            <if test="status != null  and status != ''"> and pro.status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectProjectByProId" parameterType="Long" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        where pro.pro_id = #{proId}
+    </select>
+
+    <select id="selectProPersons" parameterType="Long" resultMap="SysUsr">
+        select u.user_id,u.nick_name,u.user_name,u.email,u.phonenumber from oa_pro_user as pu left join sys_user as u
+        on pu.user_id = u.user_id where pro_id = #{id} and u.status = 0
+    </select>
+
+    <select id="selectOtherPersons" parameterType="Long" resultMap="SysUsr">
+        SELECT u.user_id,u.nick_name,u.user_name,u.email,u.phonenumber FROM sys_user as u where u.status = 0
+    </select>
+
+    <insert id="insertProject" parameterType="Project" useGeneratedKeys="true" keyProperty="proId">
+        insert into oa_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="proName != null and proName != ''">pro_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="proIntro != null">pro_intro,</if>
+            <if test="description != null">description,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="proSpeed != null">pro_speed,</if>
+            <if test="allDemand != null">all_demand,</if>
+            <if test="finishDemand != null">finish_demand,</if>
+            <if test="allTasks != null">all_tasks,</if>
+            <if test="finishTasks != null">finish_tasks,</if>
+            <if test="contractNo != null">contract_no,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="proName != null and proName != ''">#{proName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="proIntro != null">#{proIntro},</if>
+            <if test="description != null">#{description},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="proSpeed != null">#{proSpeed},</if>
+            <if test="allDemand != null">#{allDemand},</if>
+            <if test="finishDemand != null">#{finishDemand},</if>
+            <if test="allTasks != null">#{allTasks},</if>
+            <if test="finishTasks != null">#{finishTasks},</if>
+            <if test="contractNo != null">#{contractNo},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProject" parameterType="Project">
+        update oa_project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="proName != null and proName != ''">pro_name = #{proName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="proIntro != null">pro_intro = #{proIntro},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="proSpeed != null">pro_speed = #{proSpeed},</if>
+            <if test="allDemand != null">all_demand = #{allDemand},</if>
+            <if test="finishDemand != null">finish_demand = #{finishDemand},</if>
+            <if test="allTasks != null">all_tasks = #{allTasks},</if>
+            <if test="finishTasks != null">finish_tasks = #{finishTasks},</if>
+            <if test="contractNo != null">contract_no = #{contractNo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where pro_id = #{proId}
+    </update>
+
+    <delete id="deleteProjectByProId" parameterType="Long">
+        delete from oa_project where pro_id = #{proId}
+    </delete>
+
+    <delete id="deleteProAndUserRelation" parameterType="Long">
+        delete from oa_pro_user where pro_id = #{proId}
+    </delete>
+
+    <delete id="deleteProjectByProIds" parameterType="String">
+        delete from oa_project where pro_id in 
+        <foreach item="proId" collection="array" open="(" separator="," close=")">
+            #{proId}
+        </foreach>
+    </delete>
+
+    <insert id="setProAndUserRelation">
+        insert into oa_pro_user values (#{proid},#{userid})
+    </insert>
+
+    <insert id="addProFiles">
+        insert into oa_pro_file (pro_id,file_path) values (#{id},#{path})
+    </insert>
+
+    <update id="addAllDemands">
+        update oa_project set all_demand = all_demand+1 where pro_id = #{proId}
+    </update>
+
+    <delete id="delAllDemands">
+        update oa_project set all_demand = all_demand-1 where pro_id = #{proId}
+    </delete>
+
+    <update id="addFinishDemands">
+        update oa_project set finish_demand = finish_demand+1 where pro_id = #{proId}
+    </update>
+
+    <delete id="delFinishDemands">
+        update oa_project set finish_demand = finish_demand-1 where pro_id = #{proId}
+    </delete>
+
+    <delete id="deletProFiles">
+        delete from oa_pro_file where pro_id = #{id} and file_path = #{path} ;
+    </delete>
+
+    <select id="getProjectFile" resultMap="ProjectFile">
+        select file_id,pro_id,file_path from oa_pro_file where pro_id = #{id};
+    </select>
+
+    <select id="getUserProject" resultMap="ProjectResult">
+        select pu.pro_id,pro.pro_name from oa_pro_user as pu
+            left JOIN oa_project as pro on pu.pro_id = pro.pro_id
+        <where> pu.user_id = #{userId}  <if test="status != null">and pro.status = #{status}</if> </where>;
+    </select>
+
+    <select id="selectProUserName" parameterType="Long" resultType="String">
+        select nick_name from sys_user where user_id = #{userId};
+    </select>
+
+    <resultMap id="ProHour" type="com.ruoyi.project.domain.ProjectHoursCount">
+        <result property="userName" column="nick_name" ></result>
+        <result  property="workHours" column="work_hours"></result>
+    </resultMap>
+
+    <select id="selectProHoursCount" parameterType="Long" resultMap="ProHour">
+        select u.nick_name,sum(work_hours) as work_hours from oa_dayhours d
+        left JOIN sys_user u on d.user_id = u.user_id where d.pro_id = #{id} GROUP BY d.user_id order by work_hours desc
+    </select>
+</mapper>

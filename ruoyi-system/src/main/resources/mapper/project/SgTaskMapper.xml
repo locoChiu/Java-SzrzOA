@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.SgTaskMapper">
+    
+    <resultMap type="SgTask" id="SgTaskResult">
+        <result property="taskId"    column="task_id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="tasksId"    column="tasks_id"    />
+        <result property="tasksName"    column="tasks_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deadline"    column="deadline"    />
+        <result property="taskGoal"    column="task_goal"    />
+        <result property="taskFinished"    column="task_finished"    />
+        <result property="tasksHours"    column="tasks_hours"    />
+        <result property="tasksUsehours"    column="tasks_usehours"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="taskNum"    column="task_num"    />
+        <result property="taskFlag"    column="task_flag"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="taskSpeed"    column="task_speed"    />
+    </resultMap>
+
+    <sql id="selectSgTaskVoOld">
+        select task_id, task_name, tasks_id, tasks_name, user_id, user_name, deadline, task_goal,
+               task_finished, tasks_hours, tasks_usehours, task_status, task_num, task_flag,
+               status, create_by, create_time, update_by, update_time, remark from oa_task
+
+    </sql>
+
+    <sql id="selectSgTaskVo">
+        select task_id, task_speed,task_name, tasks_id, tasks_name, ts.user_id, u.nick_name as user_name, ts.deadline, task_goal,
+               task_finished, tasks_hours, tasks_usehours, task_status, task_num, task_flag,
+               ts.status, ts.create_by, ts.create_time, ts.update_by, ts.update_time, ts.remark from oa_task as ts
+                left join sys_user as u on ts.user_id = u.user_id
+    </sql>
+
+    <select id="selectSgTaskList" parameterType="SgTask" resultMap="SgTaskResult">
+        <include refid="selectSgTaskVo"/>
+        <where>  
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="tasksId != null "> and tasks_id = #{tasksId}</if>
+            <if test="tasksName != null  and tasksName != ''"> and tasks_name like concat('%', #{tasksName}, '%')</if>
+            <if test="userId != null "> and ts.user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deadline != null "> and deadline = #{deadline}</if>
+            <if test="taskGoal != null  and taskGoal != ''"> and task_goal = #{taskGoal}</if>
+            <if test="taskFinished != null "> and task_finished = #{taskFinished}</if>
+            <if test="tasksHours != null "> and tasks_hours = #{tasksHours}</if>
+            <if test="tasksUsehours != null "> and tasks_usehours = #{tasksUsehours}</if>
+            <if test="taskStatus != null "> and task_status = #{taskStatus}</if>
+            <if test="taskNum != null "> and task_num = #{taskNum}</if>
+            <if test="taskFlag != null "> and task_flag = #{taskFlag}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSgTaskByTaskId" parameterType="Long" resultMap="SgTaskResult">
+        <include refid="selectSgTaskVo"/>
+        where task_id = #{taskId}
+    </select>
+        
+    <insert id="insertSgTask" parameterType="SgTask" useGeneratedKeys="true" keyProperty="taskId">
+        insert into oa_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name,</if>
+            <if test="tasksId != null">tasks_id,</if>
+            <if test="tasksName != null">tasks_name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="taskGoal != null">task_goal,</if>
+            <if test="taskFinished != null">task_finished,</if>
+            <if test="tasksHours != null">tasks_hours,</if>
+            <if test="tasksUsehours != null">tasks_usehours,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="taskNum != null">task_num,</if>
+            <if test="taskFlag != null">task_flag,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">#{taskName},</if>
+            <if test="tasksId != null">#{tasksId},</if>
+            <if test="tasksName != null">#{tasksName},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="taskGoal != null">#{taskGoal},</if>
+            <if test="taskFinished != null">#{taskFinished},</if>
+            <if test="tasksHours != null">#{tasksHours},</if>
+            <if test="tasksUsehours != null">#{tasksUsehours},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="taskNum != null">#{taskNum},</if>
+            <if test="taskFlag != null">#{taskFlag},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSgTask" parameterType="SgTask">
+        update oa_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>
+            <if test="tasksId != null">tasks_id = #{tasksId},</if>
+            <if test="tasksName != null">tasks_name = #{tasksName},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="taskGoal != null">task_goal = #{taskGoal},</if>
+            <if test="taskFinished != null">task_finished = #{taskFinished},</if>
+            <if test="tasksHours != null">tasks_hours = #{tasksHours},</if>
+            <if test="tasksUsehours != null">tasks_usehours = #{tasksUsehours},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="taskNum != null">task_num = #{taskNum},</if>
+            <if test="taskFlag != null">task_flag = #{taskFlag},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="taskSpeed != null">task_speed = #{taskSpeed},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <delete id="deleteSgTaskByTaskId" parameterType="Long">
+        delete from oa_task where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteSgTaskByTaskIds" parameterType="String">
+        delete from oa_task where task_id in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+
+    <resultMap id="ProjectFile" type="com.ruoyi.project.domain.ProjectFile">
+        <id property="fileId" column="taskfile_id"></id>
+        <result property="pathName" column="file_path"></result>
+        <result property="proId" column="task_id"></result>
+    </resultMap>
+
+    <delete id="deletProFiles">
+        delete from oa_task_file where task_id = #{id} and file_path = #{path} ;
+    </delete>
+
+    <select id="getProjectFile" resultMap="ProjectFile">
+        select taskfile_id,task_id,file_path from oa_task_file where task_id = #{id};
+    </select>
+
+    <insert id="addProFiles">
+        insert into oa_task_file (task_id,file_path) values (#{id},#{path})
+    </insert>
+</mapper>
