@@ -1,50 +1,10 @@
 <template>
   <div class="app-container">
-    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-        <el-form-item label="用户ID" prop="userId">
-          <el-input
-            v-model="queryParams.userId"
-            placeholder="请输入用户ID"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="今日工时" prop="workHours">
-          <el-input
-            v-model="queryParams.workHours"
-            placeholder="请输入今日工时"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="填报日期" prop="workDate">
-          <el-date-picker clearable
-            v-model="queryParams.workDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择填报日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-        </el-form-item>
-      </el-form> -->
-
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['project:dayreport:add']">新增</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-          v-hasPermi="['project:dayreport:edit']">修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['project:dayreport:remove']">删除</el-button>
-      </el-col> -->
-      <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
     <el-table v-loading="loading" :data="dayreportList" @selection-change="handleSelectionChange">
@@ -60,21 +20,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="当日工时" align="center" prop="workHours" >
+      <el-table-column label="当日工时" align="center" prop="workHours">
         <template slot-scope="scope">
-          <el-tag>{{scope.row.workHours }} h</el-tag>
+          <el-tag>{{ scope.row.workHours }} h</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="工作内容" align="center" prop="content" />
-
-      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width"> -->
-      <!-- <template slot-scope="scope"> -->
-      <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-            v-hasPermi="['project:dayreport:edit']">修改</el-button> -->
-      <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-            v-hasPermi="['project:dayreport:remove']">删除</el-button> -->
-      <!-- </template> -->
-      <!-- </el-table-column> -->
     </el-table>
 
     <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
@@ -108,9 +59,9 @@
           </el-row>
 
           <el-row>
-           
+
             <el-col :span="8">
-              <el-form-item label="截止时间"  diabled>
+              <el-form-item label="截止时间" diabled>
                 <span>{{ parseTime(item.deadline, '{y}-{m}-{d}') }}</span>
               </el-form-item>
             </el-col>
@@ -176,18 +127,18 @@
         </el-table-column>
         <el-table-column prop="taskSpeed" align="center" label="进度" width="100">
           <template slot-scope="scope">
-            <el-tag>{{scope.row.taskSpeed}}</el-tag>
+            <el-tag>{{ scope.row.taskSpeed }}</el-tag>
 
           </template>
         </el-table-column>
         <el-table-column prop="taskLeaveHours" align="center" label="剩余人天" width="100">
           <template slot-scope="scope">
-            <el-tag  type="success">{{scope.row.taskLeaveDays}} </el-tag>
+            <el-tag type="success">{{ scope.row.taskLeaveDays }} </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="taskLeaveHours" align="center" label="剩余工时" width="100">
           <template slot-scope="scope">
-            <el-tag  type="success">{{scope.row.taskLeaveHours}} </el-tag>
+            <el-tag type="success">{{ scope.row.taskLeaveHours }} </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="截止时间" align="center" prop="deadline" width="140">
@@ -204,7 +155,7 @@
 <script>
 import { getUserProject } from "@/api/project/proset";
 import { getAllUserTask } from "@/api/project/tasks";
-import { listDayreport, getDayreport, delDayreport, addDayreport, updateDayreportaddDayHour,addDayHour } from "@/api/project/dayreport";
+import { listDayreport, getDayreport, delDayreport, addDayreport, updateDayreportaddDayHour, addDayHour } from "@/api/project/dayreport";
 import { listSgtask, updateSgtask } from "@/api/project/sgtask";
 import { getInfo } from '@/api/login'
 import { isRejected } from "q";
@@ -245,9 +196,9 @@ export default {
       // 是否显示弹出层
       open: false,
       // 当前选中项目ID
-      currentProId:undefined,
+      currentProId: undefined,
       // 当前选中任务包ID
-      currentTasksId:undefined,
+      currentTasksId: undefined,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -292,7 +243,7 @@ export default {
     getUserPro() {
       getUserProject(this.userInfo.userId).then(res => {
         this.userPro = res.data.started;
-        if(this.userPro.length > 0) {
+        if (this.userPro.length > 0) {
           this.getTasks();
 
         }
@@ -302,17 +253,14 @@ export default {
     chooseTask(data) {
       this.currentProId = data.proId;
       this.currentTasksId = data.tasksId;
-      // this.chooseTaskInfo = data;
       let query = {};
       query.tasksId = data.tasksId;
       query.taskStatus = 1;
-      // this.queryForm.tasksId = data.tasksId;
 
       listSgtask(query).then(res => {
         this.detailTask = res.rows;
-        if(this.detailTask.length > 0) 
-        {
-          this.detailTask.forEach(element=>{
+        if (this.detailTask.length > 0) {
+          this.detailTask.forEach(element => {
             element.taskLeaveHours = element.tasksHours - element.tasksUsehours;
           })
           this.taskChooseOpen = false;
@@ -343,8 +291,8 @@ export default {
       });
       getAllUserTask(ids).then(res => {
         this.userTasks = res.data;
-        this.userTasks.forEach(ele=>{
-          if(ele.taskFinished) {
+        this.userTasks.forEach(ele => {
+          if (ele.taskFinished) {
             ele.taskSpeed = Math.floor(ele.taskFinished / ele.taskCount * 100) + "%"
           } else {
             ele.taskSpeed = "0%";
@@ -353,15 +301,6 @@ export default {
           ele.taskLeaveDays = Math.floor(ele.taskLeaveHours / 8);
         })
       })
-      // let queryForm = {};
-      // queryForm.userId = this.userInfo.userId;
-      // queryForm.taskStatus = 1;
-      // listSgtask(queryForm).then(res => {
-      //   this.taskList = res.rows;
-      //   this.taskList.forEach(element => {
-      //     element.taskLeaveHours = element.tasksHours - element.tasksUsehours;
-      //   });
-      // });
     },
     /** 查询日报列表 */
     getList() {
@@ -417,13 +356,6 @@ export default {
       this.taskChooseOpen = true;
       // this.title = "添加日报";
     },
-    // /** 新增按钮操作 */
-    // handleAdd() {
-    //   this.reset();
-    //   this.open = true;
-    //   this.title = "添加日报";
-    // },
-    /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const dayrId = row.dayrId || this.ids
@@ -437,17 +369,17 @@ export default {
     submitForm() {
       let _this = this;
       let hourscount = 0;
-      this.detailTask.forEach(ele=>{
-        hourscount+=ele.workHours || 0
+      this.detailTask.forEach(ele => {
+        hourscount += ele.workHours || 0
       })
-      if(hourscount == 0) {
+      if (hourscount == 0) {
         this.$modal.msgWarning("实际工时不能为0");
         return;
       }
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.detailTask.forEach(ele=>{
-            if(ele.workHours) {
+          this.detailTask.forEach(ele => {
+            if (ele.workHours) {
               let param = {};
               param.proId = this.currentProId;
               param.tasksId = ele.tasksId;
@@ -455,44 +387,37 @@ export default {
               param.workSpeed = ele.taskSpeed;
               param.userId = this.userInfo.userId;
               param.content = this.form.content;
-              param.workDate   = this.form.workDate;
+              param.workDate = this.form.workDate;
               param.taskId = ele.taskId;
-              addDayHour(param).then(res=>{
+              addDayHour(param).then(res => {
                 _this.addToReport(hourscount);
                 _this.open = false;
                 _this.$modal.msgSuccess("填报成功");
-              }).catch(err=>{
+              }).catch(err => {
                 _this.$modal.msgWarning("填写日报出错，请重试");
                 _this.open = false;
                 _this.reset();
               })
             }
-            
+
           })
         }
       })
-
-
-      //   this.form.userId = this.userInfo.userId;
-      //   if (valid) {
-      //     
-      //   }
-      // });
     },
-    addToReport(hours){
+    addToReport(hours) {
       this.form.userId = this.userInfo.userId;
       this.form.workHours = hours;
       if (this.form.dayrId != null) {
-            updateDayreport(this.form).then(response => {
-              this.getList();
-              this.reset();
-            });
-          } else {
-            addDayreport(this.form).then(response => {
-              this.getList();
-              this.reset();
-            });
-          }
+        updateDayreport(this.form).then(response => {
+          this.getList();
+          this.reset();
+        });
+      } else {
+        addDayreport(this.form).then(response => {
+          this.getList();
+          this.reset();
+        });
+      }
     },
     /** 删除按钮操作 */
     handleDelete(row) {
